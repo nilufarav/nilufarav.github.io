@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>First Shift at Kopi Pagi — barista training game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbf3e8;--ink:#3b2a20;--muted:#8a7262;--card:#fff;--terra:#e0703a;--terra2:#c85a28;--green:#3f8f5a;--amber:#d99a26;--red:#cf4b3f;--line:#ecdcc8}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:14px 14px 34px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand b{display:block;font-size:19px;font-weight:900;line-height:1.1}
+.brand small{display:block;color:var(--muted);font-weight:700;font-size:13px}
+.stars{background:#fff;border:2px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:900;font-size:16px;white-space:nowrap}
+.stars span{color:var(--amber)}
+.dots{display:flex;gap:6px;margin:0 2px 12px}
+.dot{flex:1;height:7px;border-radius:9px;background:var(--line)}
+.dot.done{background:var(--terra)}
+.dot.now{background:#f2b48f}
+.card{background:var(--card);border-radius:22px;box-shadow:0 10px 30px rgba(91,58,41,.12);overflow:hidden}
+.card svg{display:block;width:100%;height:auto;background:#f6e6cf}
+.body{padding:16px 18px 18px}
+.chip{display:inline-block;background:#fdeee3;color:var(--terra2);font-weight:900;font-size:13px;padding:5px 11px;border-radius:999px;margin-bottom:8px;letter-spacing:.2px}
+h2{font-size:22px;font-weight:900;margin:0 0 6px;line-height:1.2}
+.q{font-size:17px;font-weight:700;line-height:1.45;margin:0 0 14px}
+.opts{display:grid;gap:9px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;border:2px solid var(--line);background:#fffaf4;border-radius:16px;padding:12px 14px;font:700 16px Nunito,sans-serif;color:var(--ink);cursor:pointer;line-height:1.35;transition:transform .12s,border-color .12s}
+.opt:hover:not(:disabled){border-color:var(--terra);transform:translateY(-1px)}
+.opt .k{flex:none;width:28px;height:28px;border-radius:50%;background:#f3e3d1;display:grid;place-items:center;font-weight:900;font-size:14px}
+.opt:disabled{cursor:default}
+.opt.best{border-color:var(--green);background:#eef7f0}
+.opt.best .k{background:var(--green);color:#fff}
+.opt.pick-ok{border-color:var(--amber);background:#fdf5e4}
+.opt.pick-ok .k{background:var(--amber);color:#fff}
+.opt.pick-bad{border-color:var(--red);background:#fbecea}
+.opt.pick-bad .k{background:var(--red);color:#fff}
+.opt.dim{opacity:.55}
+.fb{margin-top:14px;border-radius:16px;padding:14px 16px;animation:pop .25s ease-out}
+.fb.g{background:#eef7f0;border-left:6px solid var(--green)}
+.fb.a{background:#fdf5e4;border-left:6px solid var(--amber)}
+.fb.r{background:#fbecea;border-left:6px solid var(--red)}
+.fb h3{margin:0 0 4px;font-size:18px;font-weight:900}
+.fb p{margin:0 0 8px;font-weight:600;line-height:1.45;font-size:15.5px}
+.std{display:inline-block;font-size:12.5px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.75);border-radius:8px;padding:4px 8px}
+.btn{display:inline-block;border:0;background:var(--terra);color:#fff;font:900 17px Nunito,sans-serif;padding:13px 22px;border-radius:14px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 var(--terra2)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--terra2)}
+.btn.ghost{background:#fff;color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.lead{font-size:17px;font-weight:600;line-height:1.5;margin:0 0 6px}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 2px}
+.facts span{background:#fdeee3;border-radius:10px;padding:6px 10px;font-weight:800;font-size:14px}
+.big{font-size:44px;font-weight:900;margin:4px 0 0;color:var(--amber)}
+.rank{font-size:24px;font-weight:900;margin:2px 0 4px}
+.review{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}
+.review li{display:flex;gap:10px;align-items:flex-start;background:#fffaf4;border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-weight:700;font-size:15px;line-height:1.35}
+.review .pts{flex:none;font-weight:900;min-width:52px}
+.review small{display:block;color:var(--muted);font-weight:700;font-size:13px;margin-top:2px}
+.mgr{margin-top:16px;background:#2f2a26;color:#fff3e3;border-radius:16px;padding:14px 16px;font-weight:600;line-height:1.5;font-size:15px}
+.mgr b{color:#ffc58f}
+footer{color:var(--muted);font-size:13px;font-weight:700;text-align:center;margin-top:16px;line-height:1.6}
+footer a{color:var(--terra2)}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes steam{0%{opacity:0;transform:translateY(6px)}40%{opacity:.7}100%{opacity:0;transform:translateY(-16px)}}
+.steam{animation:steam 2.4s ease-in-out infinite}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+.blink{transform-box:fill-box;transform-origin:50% 50%;animation:blink 4.2s infinite}
+@keyframes bob{50%{transform:translateY(-3px)}}
+.bob{animation:bob 2.6s ease-in-out infinite}
+@keyframes drip{0%{transform:translateY(0);opacity:1}100%{transform:translateY(26px);opacity:0}}
+.drip{animation:drip 1.4s ease-in infinite}
+@media (max-width:520px){h2{font-size:19px}.q{font-size:16px}.opt{font-size:15px;padding:11px 12px}.brand b{font-size:17px}}
+@media (prefers-reduced-motion:reduce){.steam,.blink,.bob,.drip{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg width="42" height="42" viewBox="0 0 42 42" aria-hidden="true"><circle cx="21" cy="21" r="21" fill="#e0703a"/><circle cx="21" cy="17" r="7" fill="#ffd27a"/><g stroke="#ffd27a" stroke-width="2.4" stroke-linecap="round"><line x1="21" y1="5" x2="21" y2="7.5"/><line x1="10" y1="10" x2="11.8" y2="11.8"/><line x1="32" y1="10" x2="30.2" y2="11.8"/></g><path d="M11,22 H31 L29,31 Q21,35 13,31Z" fill="#fff3e3"/><path d="M31,24 q5,0 4,4 q-1,3 -5,2" stroke="#fff3e3" stroke-width="2.4" fill="none"/></svg>
+      <div><b>First Shift at Kopi Pagi</b><small>Barista training game</small></div>
+    </div>
+    <div class="stars" id="stars">⭐ <span>0</span> / 15</div>
+  </header>
+  <div class="dots" id="dots"></div>
+  <div class="card" id="app"></div>
+  <footer>Portfolio demo · Kopi Pagi is a fictional café · Training design: Nilufar A., L&amp;D specialist<br>Need it inside your LMS? This game can be delivered as a SCORM package.</footer>
+</div>
+
+<script>
+const S=[
+ {time:'7:00',h:7,m:0,title:'Opening the bar',scene:'open',bubble:null,
+  text:"It's your first solo opening. Doors open in 10 minutes and the espresso machine is warming up. What do you do next?",
+  options:[
+   {t:"Flush the group heads, calibrate the grinder and pull a test shot",pts:3,say:'Ready!',fb:"That's the opening checklist: machine on, flush the group heads, calibrate the grinder. The test shot proves the grind is right before the first guest walks in.",std:'Opening checklist · steps 1–3'},
+   {t:"The grinder was fine yesterday, so skip calibration and set up the pastry display",pts:1,say:'Hmm…',fb:"The display matters, but humidity and fresh beans change the grind overnight. Calibrate first, then set up the pastries.",std:'Opening checklist · step 3'},
+   {t:"Pre-make a few lattes so the morning rush goes faster",pts:0,say:'Uh-oh…',fb:"Pre-made drinks go cold and break the recipe standard. At Kopi Pagi every cup is made to order.",std:'Value: Same cup, every time'}]},
+ {time:'7:40',h:7,m:40,title:'A regular walks in',scene:'regular',bubble:'Morning!',
+  text:"Made walks in. He's a regular, and your buddy told you he always orders a flat white with oat milk. What do you do?",
+  options:[
+   {t:"Make his oat flat white, but skip the POS modifier. It's only 15k",pts:0,say:'Thanks…',fb:"Kind thought, but it's a POS error: the stock count and the till won't match. If you want to treat a regular, ask the shift lead first.",std:'POS: orders and modifiers · max 2 errors in week 4'},
+   {t:"“Morning, Made! Your usual oat flat white?” Then add the oat milk modifier in the POS",pts:3,say:'Terima kasih!',fb:"He feels remembered, and the bill is right: oat milk is a +15k IDR modifier. That's how regulars stay regulars.",std:'Value: Know the guest · POS modifiers'},
+   {t:"Ask “What can I get you?” and wait for him to order",pts:1,say:'Flat white, oat…',fb:"Polite and correct, but you missed the moment. Remembering names and usual orders is the reason people come back.",std:'Value: Know the guest'}]},
+ {time:'8:30',h:8,m:30,title:'The morning rush',scene:'rush',bubble:'…',
+  text:"Five people in the queue. Your double shot just ran in 19 seconds, and the target is 27–30. What do you do?",
+  options:[
+   {t:"Serve it. The queue is long and nobody will notice",pts:0,say:'Sour…',fb:"Guests do notice: a fast shot tastes thin and sour. One bad cup costs more than the 30 seconds you saved.",std:'Recipe: double espresso, 18 g, 27–30 s'},
+   {t:"Dump it, set the grind a little finer and pull again",pts:3,say:'Perfect!',fb:"Right call. Too fast means the grind is too coarse. Go finer, re-pull and check for 27–30 seconds. Quality first, then speed.",std:'Recipe: double espresso, 18 g, 27–30 s'},
+   {t:"Call your buddy to fix the grinder while you take orders",pts:1,say:'OK…',fb:"Asking early is a good habit, but by week 4 this one is yours. Fix the grind yourself and save your buddy for things you haven't learned yet.",std:'Week 3–4 milestone: runs the rush'}]},
+ {time:'11:15',h:11,m:15,title:'A guest comes back',scene:'complaint',bubble:'Too sweet!',
+  text:"A guest returns to the counter: “I asked for my iced latte without syrup. This is too sweet.” What do you do?",
+  options:[
+   {t:"Explain that syrup is part of the recipe card",pts:0,say:'Seriously?',fb:"Even if the order was unclear, the guest leaves unhappy. Fix it first; the recipe card is for the team, not an argument with a guest.",std:'Guest complaints · knowledge check Q8'},
+   {t:"Quietly remake it and move on",pts:1,say:'Thanks.',fb:"The guest is happy, good. But the shift lead needs to know, or the same mistake happens again tomorrow.",std:'Guest complaints · knowledge check Q8'},
+   {t:"Apologise, remake it without syrup and tell the shift lead",pts:3,say:'Terima kasih!',fb:"Apologise, remake, tell the shift lead: the Kopi Pagi way. The lead tracks mistakes so the team can fix the cause, not blame you.",std:'Guest complaints · knowledge check Q8'}]},
+ {time:'13:30',h:13,m:30,title:'Oops on the bar',scene:'spill',bubble:'Oops!',
+  text:"A quiet afternoon. Reaching for a cup, you knock over a jug of milk, and a glass breaks on the floor. What do you do?",
+  options:[
+   {t:"Tell your buddy, clean it up right away and note the milk in the waste log",pts:3,say:'All safe!',fb:"Clean as you go, and log it: the waste log by the fridge keeps the stock honest. And nobody at Kopi Pagi pays for accidents.",std:'Value: Clean as you go · waste log'},
+   {t:"Kick the glass under the counter and finish the order first",pts:0,say:'Ouch…',fb:"Broken glass is a safety risk for the whole team. Stop, make it safe, then carry on.",std:'Hygiene and safety walkthrough · Day 1'},
+   {t:"Clean it up fast and say nothing. Nobody saw",pts:1,say:'Phew…',fb:"A clean bar, good. But unlogged milk makes the stock count wrong, and broken glass needs a second check by your buddy.",std:'Waste log · FAQ: “What if I break something?”'}]}
+];
+
+/* ---------- Drawing ---------- */
+function face(m){
+  const y=-118;let s='';
+  if(m==='happy')s+=`<path d="M-15,${y} q5,-6 10,0 M5,${y} q5,-6 10,0" stroke="#2b1a2e" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  else{const ry=m==='surprised'?6.8:5.5;s+=`<g class="blink"><ellipse cx="-10" cy="${y}" rx="4.3" ry="${ry}" fill="#2b1a2e"/><ellipse cx="10" cy="${y}" rx="4.3" ry="${ry}" fill="#2b1a2e"/></g><circle cx="-11.3" cy="${y-2}" r="1.5" fill="#fff"/><circle cx="8.7" cy="${y-2}" r="1.5" fill="#fff"/>`}
+  if(m==='sad')s+=`<path d="M-16,${y-11} L-6,${y-8} M16,${y-11} L6,${y-8}" stroke="#2b1a2e" stroke-width="2.5" stroke-linecap="round"/>`;
+  if(m==='surprised')s+=`<path d="M-15,${y-13} q5,-4 10,0 M5,${y-13} q5,-4 10,0" stroke="#2b1a2e" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  s+=`<circle cx="-17" cy="-106" r="5" fill="#ff7a8a" opacity=".4"/><circle cx="17" cy="-106" r="5" fill="#ff7a8a" opacity=".4"/>`;
+  const M={happy:`<path d="M-8,-103 Q0,-92 8,-103Z" fill="#8a2c3c"/>`,neutral:`<path d="M-5,-101 Q0,-97 5,-101" stroke="#8a2c3c" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,sad:`<path d="M-6,-97 Q0,-103 6,-97" stroke="#8a2c3c" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,surprised:`<ellipse cx="0" cy="-99" rx="4" ry="5" fill="#8a2c3c"/>`};
+  return s+M[m];
+}
+function person(o){
+  const sk=o.skin,hc=o.hc,sh=o.shirt,pants=o.pants||'#3a3350';
+  let s=`<ellipse rx="28" ry="6" fill="#000" opacity=".15"/>
+<rect x="-15" y="-34" width="13" height="32" rx="5" fill="${pants}"/><rect x="2" y="-34" width="13" height="32" rx="5" fill="${pants}"/>
+<ellipse cx="-9" cy="-3" rx="10" ry="5" fill="#2b2420"/><ellipse cx="9" cy="-3" rx="10" ry="5" fill="#2b2420"/>`;
+  if(o.hair==='long')s+=`<path d="M-33,-120 C-38,-80 -40,-66 -32,-60 Q0,-54 32,-60 C40,-66 38,-80 33,-120 C33,-166 -33,-166 -33,-120Z" fill="${hc}"/>`;
+  if(o.hair==='curly')for(let a=-200;a<=20;a+=22){const q=a*Math.PI/180;s+=`<circle cx="${(Math.cos(q)*30).toFixed(1)}" cy="${(-118+Math.sin(q)*30).toFixed(1)}" r="12" fill="${hc}"/>`}
+  if(o.hair==='bun')s+=`<circle cx="0" cy="-121" r="31" fill="${hc}"/><circle cx="0" cy="-156" r="14" fill="${hc}"/>`;
+  s+=`<rect x="-7" y="-94" width="14" height="10" fill="${sk}"/><rect x="-25" y="-90" width="50" height="60" rx="18" fill="${sh}"/>`;
+  if(o.apron)s+=`<path d="M-17,-74 H17 V-30 Q0,-24 -17,-30Z" fill="#2b2420"/><path d="M-17,-74 L-12,-90 M17,-74 L12,-90" stroke="#2b2420" stroke-width="3"/><rect x="4" y="-68" width="11" height="6" rx="1.5" fill="#fff3e3"/>`;
+  s+=`<path d="M-22,-82 Q-34,-66 -31,-46" stroke="${sh}" stroke-width="11" stroke-linecap="round" fill="none"/><circle cx="-31" cy="-44" r="6" fill="${sk}"/>`;
+  if(o.hold)s+=`<path d="M22,-82 Q38,-78 38,-62" stroke="${sh}" stroke-width="11" stroke-linecap="round" fill="none"/>${o.hold}<circle cx="38" cy="-60" r="6" fill="${sk}"/>`;
+  else if(o.wave)s+=`<path d="M22,-84 Q40,-96 40,-118" stroke="${sh}" stroke-width="11" stroke-linecap="round" fill="none"/><circle cx="40" cy="-121" r="6" fill="${sk}"/>`;
+  else s+=`<path d="M22,-82 Q34,-66 31,-46" stroke="${sh}" stroke-width="11" stroke-linecap="round" fill="none"/><circle cx="31" cy="-44" r="6" fill="${sk}"/>`;
+  s+=`<circle cx="-27" cy="-114" r="6" fill="${sk}"/><circle cx="27" cy="-114" r="6" fill="${sk}"/><circle cx="0" cy="-118" r="28" fill="${sk}"/>`;
+  s+=face(o.mood||'neutral');
+  if(o.hair==='short')s+=`<path d="M-29,-120 C-32,-156 32,-158 29,-120 C24,-134 8,-140 -4,-136 C-14,-133 -22,-128 -29,-120Z" fill="${hc}"/>`;
+  else if(o.hair==='curly')s+=`<path d="M-29,-120 C-31,-156 31,-156 29,-120 C20,-136 -8,-140 -29,-120Z" fill="${hc}"/>`+[-18,-6,6,18].map(x=>`<circle cx="${x}" cy="${-140+Math.abs(x)*.3}" r="9" fill="${hc}"/>`).join('');
+  else s+=`<path d="M-30,-116 C-33,-158 33,-160 30,-116 C24,-132 8,-138 -6,-133 C-16,-129 -24,-123 -30,-116Z" fill="${hc}"/>`;
+  return s;
+}
+const ICED=`<g transform="translate(40,-76)"><path d="M-9,-14 L9,-14 L7,14 L-7,14Z" fill="#e6caa5" stroke="#fff" stroke-width="1.5"/><rect x="-6" y="-9" width="5" height="5" fill="#fff" opacity=".75"/><rect x="1" y="-2" width="5" height="5" fill="#fff" opacity=".75"/><line x1="3" y1="-14" x2="8" y2="-27" stroke="#e0703a" stroke-width="3" stroke-linecap="round"/></g>`;
+function bubble(x,y,txt,dir){
+  const w=Math.max(70,txt.length*10.5+30);const tx=dir==='l'?x+18:x+w/2-24;
+  return `<g class="bob"><rect x="${x-w/2}" y="${y-22}" width="${w}" height="36" rx="16" fill="#fff" stroke="#3b2a20" stroke-width="2.5"/><path d="M${tx-7},${y+13} L${tx},${y+26} L${tx+7},${y+13}" fill="#fff" stroke="#3b2a20" stroke-width="2.5" stroke-linejoin="round"/><rect x="${tx-9}" y="${y+10}" width="18" height="5" fill="#fff"/><text x="${x}" y="${y+2}" text-anchor="middle" dominant-baseline="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="16" fill="#3b2a20">${txt}</text></g>`;
+}
+function scene(i,res,sayOver){
+  const sc=S[i],answered=res!==undefined;
+  const moodFor=p=>p===3?'happy':p===1?'neutral':'sad';
+  const sky=sc.h<8?['#ffae86','#ffe6c0']:sc.h<12?['#79c4ff','#dcf2ff']:['#62b4f2','#e6f5ff'];
+  const ha=((sc.h%12)+sc.m/60)*30,ma=sc.m*6;
+  let s=`<svg viewBox="0 0 640 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${sc.title}">
+<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient>
+<radialGradient id="lamp"><stop offset="0" stop-color="#ffd27a" stop-opacity=".7"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient></defs>
+<rect width="640" height="240" fill="#f6e6cf"/><rect y="150" width="640" height="90" fill="#e9cfae"/><rect y="148" width="640" height="5" fill="#d4b089"/>
+<rect x="30" y="28" width="140" height="118" rx="8" fill="url(#sky)"/>
+${sc.h<8?'<circle cx="130" cy="120" r="20" fill="#fff1c2"/>':'<circle cx="138" cy="58" r="16" fill="#fff6d6"/>'}
+<path d="M30,128 Q70,108 100,124 T170,118 V146 H30Z" fill="#7cbf86"/><path d="M30,138 Q80,124 120,136 T170,132 V146 H30Z" fill="#4f9e64"/>
+<rect x="30" y="28" width="140" height="118" rx="8" fill="none" stroke="#6b4430" stroke-width="8"/><line x1="100" y1="30" x2="100" y2="146" stroke="#6b4430" stroke-width="5"/>
+<rect x="22" y="144" width="156" height="10" rx="4" fill="#6b4430"/>
+<path d="M150,144 C140,124 146,114 156,110 C160,122 158,134 154,144Z" fill="#3f8f5a"/><path d="M152,144 C164,128 172,126 176,128 C170,138 162,142 156,144Z" fill="#57a873"/><rect x="144" y="136" width="20" height="10" rx="3" fill="#c85a28"/>`;
+  if(sc.scene==='open')s+=`<line x1="64" y1="30" x2="58" y2="56" stroke="#3b2a20" stroke-width="2"/><line x1="64" y1="30" x2="70" y2="56" stroke="#3b2a20" stroke-width="2"/><rect x="40" y="54" width="48" height="26" rx="5" fill="#fff3e3" stroke="#3b2a20" stroke-width="2"/><text x="64" y="68" text-anchor="middle" dominant-baseline="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="10" fill="#c85a28">OPEN 7:10</text>`;
+  s+=`<rect x="205" y="26" width="132" height="98" rx="10" fill="#2f2a26" stroke="#6b4430" stroke-width="5"/>
+<text x="271" y="47" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="13" fill="#ffc58f">KOPI PAGI</text>
+${[['Espresso','25'],['Flat white','35'],['Latte','38'],['Cold brew','40']].map((r,k)=>`<text x="218" y="${68+k*15}" font-family="Nunito,sans-serif" font-weight="700" font-size="11" fill="#fff3e3">${r[0]}</text><text x="324" y="${68+k*15}" text-anchor="end" font-family="Nunito,sans-serif" font-weight="800" font-size="11" fill="#fff3e3">${r[1]}k</text>`).join('')}
+<circle cx="378" cy="60" r="25" fill="#fff" stroke="#6b4430" stroke-width="5"/>
+${[0,90,180,270].map(a=>`<line x1="378" y1="40" x2="378" y2="44" stroke="#6b4430" stroke-width="2.5" transform="rotate(${a} 378 60)"/>`).join('')}
+<line x1="378" y1="60" x2="378" y2="47" stroke="#3b2a20" stroke-width="3.5" stroke-linecap="round" transform="rotate(${ha} 378 60)"/>
+<line x1="378" y1="60" x2="378" y2="41" stroke="#e0703a" stroke-width="2.5" stroke-linecap="round" transform="rotate(${ma} 378 60)"/><circle cx="378" cy="60" r="3" fill="#3b2a20"/>
+<rect x="450" y="24" width="160" height="40" rx="12" fill="#e0703a"/><text x="530" y="45" text-anchor="middle" dominant-baseline="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="18" fill="#fff3e3" letter-spacing="1">KOPI PAGI</text>
+<line x1="625" y1="0" x2="625" y2="88" stroke="#3b2a20" stroke-width="2"/><circle cx="625" cy="96" r="40" fill="url(#lamp)"/><path d="M613,88 H637 L631,100 H619Z" fill="#3b2a20"/><circle cx="625" cy="102" r="5" fill="#ffd27a"/>
+
+<rect y="236" width="640" height="94" fill="#9a6644"/>${[256,282,312].map(y=>`<line x1="0" y1="${y}" x2="640" y2="${y}" stroke="#7d5034" stroke-width="2"/>`).join('')}`;
+  // barista behind counter
+  let bm=answered?moodFor(res):(sc.scene==='spill'?'surprised':'neutral');
+  s+=`<g transform="translate(530 262)">${person({skin:'#f2c39b',hair:'curly',hc:'#3b2418',shirt:'#e0703a',apron:true,mood:bm,wave:sc.scene==='open'&&answered&&res===3})}</g>`;
+  // counter
+  s+=`<rect x="300" y="200" width="340" height="104" fill="#6b4430"/><rect x="300" y="214" width="340" height="6" fill="#5a3826"/>${[340,400,460,520,580].map(x=>`<rect x="${x}" y="232" width="44" height="58" rx="6" fill="#7a4e37"/>`).join('')}
+<rect x="294" y="190" width="346" height="14" rx="4" fill="#d9c2a3"/>`;
+  // grinder + machine
+  s+=`<path d="M446,128 L470,128 L464,150 L452,150Z" fill="#5b3a29" opacity=".85"/><rect x="448" y="150" width="20" height="40" rx="4" fill="#3b2a20"/>
+<rect x="326" y="132" width="110" height="60" rx="10" fill="#c7ccd4"/><rect x="326" y="126" width="110" height="10" rx="4" fill="#9ea5b0"/>
+<rect x="340" y="140" width="34" height="16" rx="3" fill="#2f2a26"/>`;
+  let disp='READY',dcol='#7ff7a8';
+  if(sc.scene==='rush'){disp=answered&&res===3?'0:28':'0:19';dcol=answered&&res===3?'#7ff7a8':'#ff6b5e'}
+  if(sc.scene==='open'&&answered&&res===3){disp='0:28'}
+  s+=`<text x="357" y="149" text-anchor="middle" dominant-baseline="middle" font-family="monospace" font-weight="700" font-size="11" fill="${dcol}">${disp}</text>
+<circle cx="404" cy="148" r="6" fill="#e0703a"/><rect x="342" y="160" width="22" height="9" rx="2" fill="#5d636e"/><rect x="396" y="160" width="22" height="9" rx="2" fill="#5d636e"/>
+<rect x="334" y="184" width="94" height="6" rx="2" fill="#8b929d"/><path d="M345,172 H361 L359,184 H347Z" fill="#fff3e3"/>
+<g class="steam"><path d="M353,168 q-4,-6 0,-12 q4,-6 0,-12" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/></g>`;
+  if(sc.scene==='spill'){
+    s+=`<ellipse cx="400" cy="196" rx="46" ry="6" fill="#fffaf2"/><path d="M380,190 L392,176 L404,190Z" fill="#e7eef5" opacity=".9"/>
+<rect x="384" y="200" width="7" height="20" rx="3.5" fill="#fffaf2"/><rect x="420" y="200" width="6" height="14" rx="3" fill="#fffaf2"/>
+<g class="drip"><circle cx="387" cy="224" r="4" fill="#fffaf2"/></g><g class="drip" style="animation-delay:.6s"><circle cx="423" cy="218" r="3.5" fill="#fffaf2"/></g>`;
+    if(!answered||res===0)s+=`<path d="M330,312 l10,-8 l6,9z M352,316 l8,-12 l5,13z M318,318 l7,-5 l3,7z" fill="#cfe3ee" stroke="#9fbfd0" stroke-width="1.5"/>`;
+  }
+  // guests
+  const gm=answered?moodFor(res):(sc.scene==='complaint'?'sad':'neutral');
+  if(sc.scene==='rush'){
+    s+=`<g transform="translate(70 306) scale(.9)">${person({skin:'#e8b48a',hair:'bun',hc:'#5b3a29',shirt:'#9b7bff',mood:answered&&res===0?'sad':'neutral'})}</g>`;
+    s+=`<g transform="translate(140 308) scale(.95)">${person({skin:'#8f5b3c',hair:'short',hc:'#1f1716',shirt:'#3fae9a',mood:answered&&res===0?'sad':'neutral'})}</g>`;
+    s+=`<g transform="translate(225 312)">${person({skin:'#ffe0cc',hair:'long',hc:'#d9a441',shirt:'#5b8fd9',mood:gm})}</g>`;
+  }
+  if(sc.scene==='regular')s+=`<g transform="translate(225 312)">${person({skin:'#b9794f',hair:'short',hc:'#1f1716',shirt:'#3f8f5a',pants:'#4a4a5a',mood:gm,wave:!answered})}</g>`;
+  if(sc.scene==='complaint')s+=`<g transform="translate(225 312)">${person({skin:'#ffe0cc',hair:'long',hc:'#d9a441',shirt:'#5b8fd9',mood:gm,hold:ICED})}</g>`;
+  // bubbles
+  const opt=answered?S[i].options.find(o=>o.pts===res):null;
+  const txt=sayOver||(answered?opt.say:sc.bubble);
+  if(txt){
+    const guestScene=['regular','rush','complaint'].includes(sc.scene);
+    s+=guestScene?bubble(225,112,txt,'l'):bubble(450,102,txt,'r');
+  }
+  return s+'</svg>';
+}
+
+/* ---------- Game ---------- */
+const app=document.getElementById('app'),starsEl=document.querySelector('#stars span'),dots=document.getElementById('dots');
+let st={screen:'intro',i:0,score:0,answers:[]};
+function renderDots(){dots.innerHTML=S.map((_,k)=>`<div class="dot ${k<st.answers.length?'done':(st.screen==='q'&&k===st.i?'now':'')}"></div>`).join('');starsEl.textContent=st.score}
+function intro(){
+  app.innerHTML=`${scene(0,3,'Selamat pagi!')}
+<div class="body"><span class="chip">3-minute training game</span><h2>Your first solo shift</h2>
+<p class="lead">Five real moments from the Kopi Pagi bar, from opening to the afternoon. Choose what you would do, see why, and earn up to 15 stars.</p>
+<div class="facts"><span>☕ 5 situations</span><span>⭐ 3 stars for the best call</span><span>📋 Every answer links to a standard</span><span>📦 SCORM version for your LMS on request</span></div>
+<button class="btn" id="go">Start shift</button></div>`;
+  document.getElementById('go').onclick=()=>{st.screen='q';draw()};
+}
+function question(){
+  const sc=S[st.i],a=st.answers[st.i];
+  const keys=['A','B','C'];
+  let h=scene(st.i,a?a.pts:undefined)+`<div class="body"><span class="chip">${sc.time} · ${st.i+1} of ${S.length}</span><h2>${sc.title}</h2><p class="q">${sc.text}</p><div class="opts">`;
+  sc.options.forEach((o,k)=>{
+    let cls='';
+    if(a){ if(o.pts===3)cls='best'; if(k===a.k&&o.pts!==3)cls=o.pts===1?'pick-ok':'pick-bad'; if(k!==a.k&&o.pts!==3)cls='dim'; }
+    h+=`<button class="opt ${cls}" data-k="${k}" ${a?'disabled':''}><span class="k">${a&&o.pts===3?'✓':keys[k]}</span><span>${o.t}</span></button>`;
+  });
+  h+='</div>';
+  if(a){
+    const o=sc.options[a.k],c=o.pts===3?'g':o.pts===1?'a':'r',title=o.pts===3?'Great call! +3 ⭐':o.pts===1?'Almost. +1 ⭐':'Not quite. +0 ⭐';
+    h+=`<div class="fb ${c}"><h3>${title}</h3><p>${o.fb}</p><span class="std">📋 ${o.std}</span></div><button class="btn" id="next">${st.i<S.length-1?'Next situation →':'See my results →'}</button>`;
+  }
+  app.innerHTML=h+'</div>';
+  app.querySelectorAll('.opt:not(:disabled)').forEach(b=>b.onclick=()=>{const k=+b.dataset.k,o=sc.options[k];st.answers[st.i]={k,pts:o.pts};st.score+=o.pts;draw();app.querySelector('.fb').scrollIntoView({behavior:'smooth',block:'nearest'})});
+  const n=document.getElementById('next');if(n)n.onclick=()=>{if(st.i<S.length-1){st.i++;}else st.screen='end';draw();window.scrollTo({top:0,behavior:'smooth'})};
+}
+function end(){
+  const sc=st.score;
+  const rank=sc>=13?['Ready for a solo shift ☕','You would pass the day-30 check. Your buddy can step back.']:sc>=9?['Almost there','A few standards to review with your buddy before your first solo shift.']:['Back to the bar with your buddy','Go through the missed standards together, then play again.'];
+  app.innerHTML=`<div class="body" style="padding-top:22px"><span class="chip">Shift complete</span>
+<p class="big">⭐ ${sc} / 15</p><p class="rank">${rank[0]}</p><p class="lead">${rank[1]}</p>
+<ul class="review">${S.map((s,k)=>{const a=st.answers[k],o=s.options[a.k];return `<li><span class="pts">${o.pts===3?'⭐⭐⭐':o.pts===1?'⭐':'—'}</span><span>${s.time} · ${s.title}<small>${o.pts===3?'Best call':'Review: '+o.std}</small></span></li>`}).join('')}</ul>
+<div class="mgr"><b>For managers:</b> every choice maps to a standard from the onboarding program (recipe cards, POS, opening checklist, values). In the full version, the game uses your own menu, standards and brand. It works as a link on any phone, or we can deliver it as a <b>SCORM package</b> for your LMS (Moodle, TalentLMS, iSpring and others), so scores and completion go straight to your reports.</div>
+<button class="btn" id="again">Play again</button></div>`;
+  document.getElementById('again').onclick=()=>{st={screen:'intro',i:0,score:0,answers:[]};draw()};
+}
+function draw(){renderDots();if(st.screen==='intro')intro();else if(st.screen==='q')question();else end()}
+draw();
+</script>
+</body>
+</html>
